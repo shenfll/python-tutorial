@@ -34,13 +34,13 @@ function highlight(element) {
 }
 
 window.onload = async function () {
-    sanitized = (await (await fetch("page.md")).text()).replaceAll("<", "&lt;").replaceAll(">", "&gt;");
+    markdown = (await (await fetch("page.md")).text());
     var html = "";
     var block = false;
     var regex = /`(.+?)`/g;
     var newline = /\s\s+$/;
-    var link = /\[(.+)\]\((.+)\)/g;
-    for (line of sanitized.split("\n")) {
+    var link = /\[(.+?)\]\((.+?)\)/g;
+    for (line of markdown.split("\n")) {
         if (line.startsWith("```")) {
             if (block == false) {
                 html += "<pre><code>";
@@ -59,7 +59,7 @@ window.onload = async function () {
                 html += line.replaceAll(regex, "<code>$1</code>").replace(newline, "<br />").replaceAll(link, `<a href="$2" target="_blank">$1</a>`);
             }
         } else {
-            html += line;
+            html += line.replaceAll("<", "&lt;").replaceAll(">", "&gt;");
         }
     }
     document.getElementById("content").innerHTML = html;
